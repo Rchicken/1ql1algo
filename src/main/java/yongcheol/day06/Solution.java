@@ -1,46 +1,40 @@
 package yongcheol.day06;
 
 
+import java.util.Arrays;
+
 public class Solution {
 
     public int solution(String dartResult) {
         int answer = 0;
         int[] scores = new int[3];
         int idx = 0;
-
+        int score = 0;
         for (int i = 0; i < dartResult.length(); i++) {
-            int score = 0;
-            while (dartResult.charAt(i) >= '0' && dartResult.charAt(i) <= '9') {
+            if (dartResult.charAt(i) >= '0' && dartResult.charAt(i) <= '9') {
                 score = score * 10 + Integer.parseInt(String.valueOf(dartResult.charAt(i)));
-                i++;
-            }
-            switch (dartResult.charAt(i)) {
-                case 'S' -> scores[idx] = score;
-                case 'D' -> scores[idx] = score * score;
-                case 'T' -> scores[idx] = score * score * score;
-                default -> {}
-            }
-            i++;
-            if (dartResult.length() == i)
-                break;
-            switch (dartResult.charAt(i)) {
-                case '*' -> {
-                    for (int j = idx; j >= 0; j--) {
-                        scores[j] *= 2;
-                    }
-                    scores[idx++] *= 2;
+            } else if (dartResult.charAt(i) == 'S' || dartResult.charAt(i) == 'D' || dartResult.charAt(i) == 'T') {
+                switch (dartResult.charAt(i)) {
+                    case 'S' -> scores[idx] = score;
+                    case 'D' -> scores[idx] = score * score;
+                    case 'T' -> scores[idx] = score * score * score;
+                    default -> {}
                 }
-                case '#' -> {
-                    for (int j = idx; j >= 0; j--) {
-                        scores[j] *= -1;
+                score = 0;
+                idx++;
+            } else {
+                if (dartResult.charAt(i) == '#') {
+                    scores[idx - 1] *= -1;
+                } else if (dartResult.charAt(i) == '*'){
+                    scores[idx - 1] *= 2;
+                    if (idx - 2 >= 0) {
+                        scores[idx - 2] *= 2;
                     }
-                    scores[idx++] *= -1;
                 }
-                default -> {}
             }
         }
-        for (int score : scores) {
-            answer += score;
+        for (int s : scores) {
+            answer += s;
         }
         return answer;
     }
